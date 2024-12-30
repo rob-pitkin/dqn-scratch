@@ -36,3 +36,14 @@ class ReplayBuffer:
             batch_size (int): size of the batch to sample
         """
         return random.sample(self.buffer, batch_size)
+
+    def getSize(self) -> int:
+        """
+        Get the current size of the replay buffer
+
+        Args:
+            None
+        Returns:
+            int: the size of the replay buffer
+        """
+        return len(self.buffer)

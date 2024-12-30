@@ -9,8 +9,6 @@ class QNetwork(nn.Module):
     Attributes:
         input_dim (int): input size of the network, typically the size of the observation space
         output_dim (int): output size of the network, typically the size of the action space
-        activation_fn (str): activation function, one of "relu" or "tanh"
-        hidden_num (int): number of hidden layers
         hidden_dims (List): list of hidden layer sizes from layer 0 to n
     """
 
@@ -19,7 +17,6 @@ class QNetwork(nn.Module):
         input_dim: int,
         output_dim: int,
         activation_fn: str,
-        hidden_num: int = None,
         hidden_dims: list[int] = None,
     ):
         super(QNetwork, self).__init__()
@@ -40,12 +37,9 @@ class QNetwork(nn.Module):
         self.layers = []
         for i in range(len(layer_sizes) - 1):
             self.layers.append(nn.Linear(layer_sizes[i], layer_sizes[i + 1]))
-
-        self.activation = None
-        if activation_fn == "relu":
-            self.activation = nn.ReLU()
-        else:
-            self.activation = nn.Tanh()
+            self.layers.append(nn.ReLU() if activation_fn == "relu" else nn.Tanh())
+        self.layers.pop()
+        self.fc = nn.Sequential(*self.layers)
 
     def forward(self, x: torch.tensor) -> torch.tensor:
         """
@@ -57,7 +51,4 @@ class QNetwork(nn.Module):
         Returns:
             torch.tensor: a tensor with the values for each output
         """
-        for i in range(len(self.layers) - 1):
-            x = self.layers[i](x)
-            x = self.activation(x)
-        return self.layers[-1](x)
+        return self.fc(x)
