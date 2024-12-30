@@ -15,8 +15,9 @@ conda install gymnasium
 - TODO
 
 ## Implementation Steps
-1. Define the Q-Network class
-2. Define the Replay Buffer class
+1. Define the Q-Network class [DONE]
+2. Define the Replay Buffer class [DONE]
 3. Define the Agent class
 4. Define the training loop
 5. Training and evaluation
+6. Define the main function
