@@ -1,5 +1,5 @@
 import gymnasium as gym
-from network import QNetwork
+from network import QNetwork, DuelingQNetwork
 import random
 import torch
 from replay_buffer import ReplayBuffer
@@ -30,6 +30,7 @@ class DQN:
         buffer_capacity: int = 10000,
         gamma: float = 0.99,
         epsilon: float = 0.1,
+        network_type: str = "regular",
     ):
         """
         Args:
@@ -42,7 +43,11 @@ class DQN:
             gamma (float): discount factor
             epsilon (float): threshold for e-greedy action selection
         """
-        self.q = QNetwork(obs_dim, action_dim, activation_fn, hidden_dims)
+        self.q = (
+            DuelingQNetwork(obs_dim, action_dim, activation_fn, hidden_dims)
+            if network_type == "dueling"
+            else QNetwork(obs_dim, action_dim, activation_fn, hidden_dims)
+        )
         self.target = QNetwork(obs_dim, action_dim, activation_fn, hidden_dims)
         self.replay_buffer = ReplayBuffer(buffer_capacity)
         self.env = gym.make(env_id)
